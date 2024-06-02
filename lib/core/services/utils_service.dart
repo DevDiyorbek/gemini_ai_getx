@@ -12,7 +12,7 @@ class Utils{
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile == null) {
-      return ""; // Handle user canceling image selection
+      return "";
     }
 
     final imageFile = File(pickedFile.path);

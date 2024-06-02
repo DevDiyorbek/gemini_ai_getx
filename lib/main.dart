@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gemini_ai_prototype/pages/home_page.dart';
+import 'package:gemini_ai_prototype/presentation/pages/home_page.dart';
 
 void main() {
   runApp(const MyApp());

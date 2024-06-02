@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:gemini_ai_prototype/core/constants/constants.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http/intercepted_client.dart';
-import '../models/gemini_talk_res.dart';
+import '../../models/gemini_talk_model.dart';
 import 'http_helper.dart';
 
 class Network {
@@ -51,10 +52,9 @@ class Network {
   static String API_GEMINI_TALK = "/v1/models/gemini-1.5-flash:generateContent";
 
   /* Http Params */
-
   static Map<String, String> paramsApiKey() {
     Map<String, String> params = {};
-    params.addAll({'key': "AIzaSyBPiSZhzT816_Bn3umkrzxnKo4ohjTFD-w"});
+    params.addAll({'key': GEMINI_API_KEY});
     return params;
   }
 
@@ -91,9 +91,8 @@ class Network {
   }
 
   /* Http Parsing */
-
-  static GeminiTalkRes parseGeminiTalk(String response) {
+  static GeminiTalkModel parseGeminiTalk(String response) {
     dynamic json = jsonDecode(response);
-    return GeminiTalkRes.fromJson(json);
+    return GeminiTalkModel.fromJson(json);
   }
 }

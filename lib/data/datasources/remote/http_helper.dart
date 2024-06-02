@@ -3,16 +3,12 @@ import 'package:http_interceptor/models/request_data.dart';
 import 'package:http_interceptor/models/response_data.dart';
 import 'package:http_interceptor/models/retry_policy.dart';
 
-import 'log_service.dart';
-
+import '../../../core/services/log_service.dart';
 
 class HttpInterceptor implements InterceptorContract {
   @override
   Future<RequestData> interceptRequest({required RequestData data}) async {
     try {
-      // Fetching access token from your local
-      var accessToken = "";
-      // Clear previous header and update it with updated token
       data.headers.clear();
       data.headers['Content-type'] = 'application/json';
       LogService.i(data.toString());
@@ -42,17 +38,6 @@ class HttpRetryPolicy extends RetryPolicy {
   @override
   Future<bool> shouldAttemptRetryOnResponse(ResponseData response) async {
     if (response.statusCode == 401) {
-      // Load access and refresh token from local
-      var accessToken = "";
-      var refreshToken = "";
-
-      // Call refresh token Api and get response
-      // Map<String, String> headers = {'Content-type': 'application/json'};
-      // headers.putIfAbsent("Authorization", () => 'Bearer $accessToken');
-      // headers.putIfAbsent("RefreshToken", () => 'Bearer $refreshToken');
-      // var response = await HttpService.GET(HttpService.API_REFRESH_TOKEN, HttpService.paramsEmpty());
-      // Store access and refresh token to local
-
       return true;
     }
     return false;
