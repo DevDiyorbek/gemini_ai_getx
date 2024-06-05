@@ -26,7 +26,6 @@ class Network {
         _throwException(response);
       }
     } on SocketException catch (_) {
-      // if the network connection fails
       rethrow;
     }
   }
