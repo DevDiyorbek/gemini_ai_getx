@@ -15,13 +15,13 @@ Widget itemOfGeminiMessage(MessageModel message){
             children: [
               Container(
                 width: 30,
-                child: Image.asset('assets/images/gemini_icon.png'),
+                child: Image.asset('assets/images/gemini_profile.png'),
               ),
-              Icon(Icons.volume_up, color: Colors.white70,)
+              const Icon(Icons.volume_up, color: Colors.white70,)
             ],
           ),
           Container(
-            margin: EdgeInsets.only(top: 15),
+            margin: const EdgeInsets.only(top: 15),
             child: Text(
               message.message!,
               style:

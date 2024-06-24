@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gemini_ai_prototype/presentation/widgets/google_sign_in_button.dart';
 import 'package:video_player/video_player.dart';
 
 import '../widgets/chat_with_gemini_button.dart';
@@ -49,7 +50,8 @@ class _StartPageState extends State<StartPage> {
                   child: videoPlayerController.value.isInitialized
                       ? VideoPlayer(videoPlayerController)
                       : Container()),
-              chatWithGeminiButton(context)
+              googleSignUp(context)
+              // chatWithGeminiButton(context)
             ],
           ),
         ),

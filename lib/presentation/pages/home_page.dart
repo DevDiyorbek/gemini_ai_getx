@@ -32,10 +32,13 @@ class _HomePageState extends State<HomePage> {
   final ImagePicker _picker = ImagePicker();
   File? _image;
 
+
+
+
   List<MessageModel> messages = [
     MessageModel(isMine: true,message:'How to learn Flutter? How to learn Flutter?How to learn Flutter?efwefewfewfewfff'),
     MessageModel(isMine: false,message:'In Flutter, the BorderRadius.only constructor is used to apply rounded corners to specific edges of a widget. It provides more granular control compared to other BorderRadius constructors that set a uniform radius for all corners'),
-    MessageModel(isMine: true, message: 'What is this picture?', base64: testImage),
+    MessageModel(isMine: true, message: 'What is this picture?', base64: base64Image),
     MessageModel(isMine: false,message:"In Flutter, the BorderRadius.only constructor is used to apply rounded corners to specific edges of a widget. It provides more granular control compared to other BorderRadius constructors that set a uniform radius for all cornersIn Flutter, the BorderRadius.only constructor is used to apply rounded corners to specific edges of a widget. It provides more granular control compared to other BorderRadius constructors that set a uniform radius for all corners")
   ];
 
@@ -75,6 +78,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    base64 = base64Image;
     // TODO: implement initState
     super.initState();
     apiTextOnly();
