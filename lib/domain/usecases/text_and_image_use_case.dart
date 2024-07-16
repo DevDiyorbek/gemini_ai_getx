@@ -11,5 +11,4 @@ class TextAndImageUseCase {
   Future<Either<String, String>> call(String text, String base64) async {
     return await repository.onTextAndImage(text, base64);
   }
-
 }

@@ -13,9 +13,6 @@ Widget chatWithGeminiButton(BuildContext context) {
         const LinearGradient(colors: [Colors.blue, Colors.red])
             .createShader(bounds),
     child: OutlinedButton(
-      style: ButtonStyle(
-        textStyle: WidgetStateProperty.all(const TextStyle(fontSize: 15)),
-      ),
       onPressed: () {
         Navigator.pushReplacement(
           context,

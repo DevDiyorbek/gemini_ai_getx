@@ -32,15 +32,7 @@ class _HomePageState extends State<HomePage> {
   final ImagePicker _picker = ImagePicker();
   File? _image;
 
-
-
-
-  List<MessageModel> messages = [
-    MessageModel(isMine: true,message:'How to learn Flutter? How to learn Flutter?How to learn Flutter?efwefewfewfewfff'),
-    MessageModel(isMine: false,message:'In Flutter, the BorderRadius.only constructor is used to apply rounded corners to specific edges of a widget. It provides more granular control compared to other BorderRadius constructors that set a uniform radius for all corners'),
-    MessageModel(isMine: true, message: 'What is this picture?', base64: base64Image),
-    MessageModel(isMine: false,message:"In Flutter, the BorderRadius.only constructor is used to apply rounded corners to specific edges of a widget. It provides more granular control compared to other BorderRadius constructors that set a uniform radius for all cornersIn Flutter, the BorderRadius.only constructor is used to apply rounded corners to specific edges of a widget. It provides more granular control compared to other BorderRadius constructors that set a uniform radius for all corners")
-  ];
+  List<MessageModel> messages = [];
 
   @override
   void dispose() {
@@ -113,8 +105,8 @@ class _HomePageState extends State<HomePage> {
                             child: SizedBox(
                               height: 100,
                               width: 100,
-                              child:
-                                  Image.asset('assets/images/gemini_icon.png'),
+                              child: Image.asset(
+                                  'assets/images/gemini_profile.png'),
                             ),
                           )
                         : ListView.builder(
@@ -177,30 +169,41 @@ class _HomePageState extends State<HomePage> {
                               },
                             ),
                           ),
-                          const SizedBox(width: 10),
-                          // Add some space between TextField and Icons
+
                           if (textController
                               .text.isEmpty) // Show icons only if text is empty
-                            IconButton(
-                              onPressed: () async {
-                                pickImage();
-                              },
-                              icon: const Icon(
+                            InkWell(
+                              child: const Icon(
                                 Icons.attach_file,
                                 color: Colors.grey,
                               ),
+                              onTap: () async {
+                                pickImage();
+                              },
                             ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+
                           if (textController
                               .text.isEmpty) // Show icons only if text is empty
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
+                            InkWell(
+                              child: const Icon(
                                 Icons.mic,
                                 color: Colors.grey,
                               ),
+                              onTap: () {},
                             ),
-                          IconButton(
-                            onPressed: () {
+                          const SizedBox(
+                            width: 5,
+                          ),
+
+                          InkWell(
+                            child: const Icon(
+                              Icons.send,
+                              color: Colors.grey,
+                            ),
+                            onTap: () {
                               if (base64 != '') {
                                 // apiTextAndImage(textController.text, base64);
                               } else {
@@ -208,11 +211,44 @@ class _HomePageState extends State<HomePage> {
                               }
                               _focusNode.unfocus();
                             },
-                            icon: const Icon(
-                              Icons.send,
-                              color: Colors.grey,
-                            ),
                           ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+
+                          // IconButton(
+                          //   onPressed: () async {
+                          //     pickImage();
+                          //   },
+                          //   icon: const Icon(
+                          //     Icons.attach_file,
+                          //     color: Colors.grey,
+                          //   ),
+                          // ),
+
+                          // IconButton(
+                          //   onPressed: () {},
+                          //   icon: const Icon(
+                          //     Icons.mic,
+                          //     color: Colors.grey,
+                          //   ),
+                          // ),
+
+                          //
+                          // IconButton(
+                          //   onPressed: () {
+                          //     if (base64 != '') {
+                          //       // apiTextAndImage(textController.text, base64);
+                          //     } else {
+                          //       // apiTextOnly(textController.text);
+                          //     }
+                          //     _focusNode.unfocus();
+                          //   },
+                          //   icon: const Icon(
+                          //     Icons.send,
+                          //     color: Colors.grey,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],

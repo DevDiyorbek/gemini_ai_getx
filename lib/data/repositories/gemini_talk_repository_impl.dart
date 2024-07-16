@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-
 import '../../domain/repositories/gemini_talk_repository.dart';
 import '../datasources/remote/http_service.dart';
 
