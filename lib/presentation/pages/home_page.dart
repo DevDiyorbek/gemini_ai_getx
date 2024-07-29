@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:gemini_ai_prototype/data/repositories/gemini_talk_repository_impl.dart';
 import 'package:gemini_ai_prototype/domain/usecases/text_and_image_use_case.dart';
 import 'package:gemini_ai_prototype/domain/usecases/text_only_use_case.dart';
+import 'package:gemini_ai_prototype/presentation/controllers/home_controller.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../core/constants/constants.dart';
 import '../../core/services/log_service.dart';
@@ -21,59 +23,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  TextOnlyUseCase textOnlyUseCase = TextOnlyUseCase(GeminiTalkRepositoryImpl());
-  TextAndImageUseCase textAndImageUseCase =
-      TextAndImageUseCase(GeminiTalkRepositoryImpl());
-
-  final FocusNode _focusNode = FocusNode();
-  TextEditingController textController = TextEditingController();
-  String response = '';
-  String base64 = '';
-  final ImagePicker _picker = ImagePicker();
-  File? _image;
-
-  List<MessageModel> messages = [];
+  final homeController = Get.find<HomeController>();
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    homeController.textController.dispose();
+    homeController.focusNode.dispose();
     super.dispose();
-  }
-
-  pickImage() async {
-    base64 = await Utils.pickAndConvertImage();
-    LogService.i('Image selected !!!');
-  }
-
-  apiTextOnly() async {
-    var text = "What is the best way to learn Flutter development?";
-    var either = await textOnlyUseCase.call(text);
-
-    either.fold((l) {
-      LogService.d(l);
-    }, (r) async {
-      LogService.d(r);
-    });
-  }
-
-  apiTextAndImage() async {
-    var text = "What is this image?";
-    var base64 = await Utils.pickAndConvertImage();
-
-    var either = await textAndImageUseCase.call(text, base64);
-    either.fold((l) {
-      LogService.d(l);
-    }, (r) async {
-      LogService.d(r);
-    });
   }
 
   @override
   void initState() {
-    base64 = base64Image;
-    // TODO: implement initState
     super.initState();
-    apiTextOnly();
   }
 
   @override
@@ -83,179 +44,140 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.black,
         body: GestureDetector(
           onTap: () {
-            _focusNode.unfocus();
+            homeController.focusNode.unfocus();
           },
-          child: Container(
-            padding: const EdgeInsets.only(bottom: 20, top: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                const SizedBox(
-                  height: 45,
-                  child: Image(
-                    image: AssetImage('assets/images/gemini_logo.png'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.all(15),
-                    child: messages.isEmpty
-                        ? Center(
-                            child: SizedBox(
-                              height: 100,
-                              width: 100,
-                              child: Image.asset(
-                                  'assets/images/gemini_profile.png'),
-                            ),
-                          )
-                        : ListView.builder(
-                            itemCount: messages.length,
-                            itemBuilder: (context, index) {
-                              var message = messages[index];
-                              if (message.isMine!) {
-                                return itemOfUserMessage(message);
-                              } else {
-                                return itemOfGeminiMessage(message);
-                              }
-                            },
-                          ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(right: 20, left: 20),
-                  padding: const EdgeInsets.only(left: 20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(color: Colors.grey, width: 1.5),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _image == null
-                          ? SizedBox.shrink()
-                          : Container(
-                              margin: EdgeInsets.only(top: 15),
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                // color: Colors.blue,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.white),
+          child: GetBuilder<HomeController>(
+            builder: (_) {
+              return Container(
+                padding: const EdgeInsets.only(bottom: 20, top: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const SizedBox(
+                      height: 45,
+                      child: Image(
+                        image: AssetImage('assets/images/gemini_logo.png'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.all(15),
+                        child: homeController.messages.isEmpty
+                            ? Center(
+                                child: SizedBox(
+                                  height: 100,
+                                  width: 100,
+                                  child: Image.asset(
+                                      'assets/images/gemini_profile.png'),
+                                ),
+                              )
+                            : ListView.builder(
+                                itemCount: homeController.messages.length,
+                                itemBuilder: (context, index) {
+                                  var message = homeController.messages[index];
+                                  if (message.isMine!) {
+                                    return itemOfUserMessage(message);
+                                  } else {
+                                    return itemOfGeminiMessage(message);
+                                  }
+                                },
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.file(
-                                  _image!,
-                                  fit: BoxFit.cover,
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(right: 20, left: 20),
+                      padding: const EdgeInsets.only(left: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(color: Colors.grey, width: 1.5),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          homeController.image == null
+                              ? SizedBox.shrink()
+                              : Container(
+                                  margin: EdgeInsets.only(top: 15),
+                                  height: 100,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                    // color: Colors.blue,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.white),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.file(
+                                      homeController.image!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: homeController.textController,
+                                  maxLines: null,
+                                  style: const TextStyle(color: Colors.white),
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: 'Message',
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                  ),
+                                  onChanged: (String text) {
+                                    setState(
+                                        () {}); // Trigger a rebuild to update the UI
+                                  },
                                 ),
                               ),
-                            ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: textController,
-                              maxLines: null,
-                              style: const TextStyle(color: Colors.white),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Message',
-                                hintStyle: TextStyle(color: Colors.grey),
+                              InkWell(
+                                child: const Icon(
+                                  Icons.attach_file,
+                                  color: Colors.grey,
+                                ),
+                                onTap: () async {
+                                  homeController.onSelectImage();
+                                },
                               ),
-                              onChanged: (String text) {
-                                setState(
-                                    () {}); // Trigger a rebuild to update the UI
-                              },
-                            ),
-                          ),
-
-                          if (textController
-                              .text.isEmpty) // Show icons only if text is empty
-                            InkWell(
-                              child: const Icon(
-                                Icons.attach_file,
-                                color: Colors.grey,
+                              const SizedBox(
+                                width: 5,
                               ),
-                              onTap: () async {
-                                pickImage();
-                              },
-                            ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-
-                          if (textController
-                              .text.isEmpty) // Show icons only if text is empty
-                            InkWell(
-                              child: const Icon(
-                                Icons.mic,
-                                color: Colors.grey,
+                              InkWell(
+                                child: const Icon(
+                                  Icons.mic,
+                                  color: Colors.grey,
+                                ),
+                                onTap: () {},
                               ),
-                              onTap: () {},
-                            ),
-                          const SizedBox(
-                            width: 5,
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              InkWell(
+                                child: const Icon(
+                                  Icons.send,
+                                  color: Colors.grey,
+                                ),
+                                onTap: () {
+                                  var text = homeController.textController.text
+                                      .toString()
+                                      .trim();
+                                  homeController.onSendButtonPressed(text);
+                                },
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                            ],
                           ),
-
-                          InkWell(
-                            child: const Icon(
-                              Icons.send,
-                              color: Colors.grey,
-                            ),
-                            onTap: () {
-                              if (base64 != '') {
-                                // apiTextAndImage(textController.text, base64);
-                              } else {
-                                // apiTextOnly(textController.text);
-                              }
-                              _focusNode.unfocus();
-                            },
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-
-                          // IconButton(
-                          //   onPressed: () async {
-                          //     pickImage();
-                          //   },
-                          //   icon: const Icon(
-                          //     Icons.attach_file,
-                          //     color: Colors.grey,
-                          //   ),
-                          // ),
-
-                          // IconButton(
-                          //   onPressed: () {},
-                          //   icon: const Icon(
-                          //     Icons.mic,
-                          //     color: Colors.grey,
-                          //   ),
-                          // ),
-
-                          //
-                          // IconButton(
-                          //   onPressed: () {
-                          //     if (base64 != '') {
-                          //       // apiTextAndImage(textController.text, base64);
-                          //     } else {
-                          //       // apiTextOnly(textController.text);
-                          //     }
-                          //     _focusNode.unfocus();
-                          //   },
-                          //   icon: const Icon(
-                          //     Icons.send,
-                          //     color: Colors.grey,
-                          //   ),
-                          // ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gemini_ai_prototype/presentation/controllers/start_controller.dart';
 import 'package:gemini_ai_prototype/presentation/widgets/google_sign_in_button.dart';
+import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
-
-import '../widgets/chat_with_gemini_button.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
@@ -12,24 +12,17 @@ class StartPage extends StatefulWidget {
 }
 
 class _StartPageState extends State<StartPage> {
-  late VideoPlayerController videoPlayerController;
+  final startController = Get.find<StartController>();
 
   @override
   void initState() {
     super.initState();
-    videoPlayerController =
-    VideoPlayerController.asset("assets/videos/flash_video.mp4")
-      ..initialize().then((_) {
-        setState(() {});
-      });
-
-    videoPlayerController.play();
-    videoPlayerController.setLooping(true);
+    startController.initVideoPlayer();
   }
 
   @override
   void dispose() {
-    videoPlayerController.dispose();
+    startController.stopVideoPlayer();
     super.dispose();
   }
 
@@ -47,8 +40,8 @@ class _StartPageState extends State<StartPage> {
                 height: 40,
               ),
               Expanded(
-                  child: videoPlayerController.value.isInitialized
-                      ? VideoPlayer(videoPlayerController)
+                  child: startController.videoPlayerController.value.isInitialized
+                      ? VideoPlayer(startController.videoPlayerController)
                       : Container()),
               googleSignUp(context)
               // chatWithGeminiButton(context)
